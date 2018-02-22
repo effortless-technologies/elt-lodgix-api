@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"reflect"
 	"strconv"
-	"fmt"
 )
 
 type Property struct {
@@ -245,10 +244,6 @@ func FilterState(properties []*Property, state string) ([]*Property, error) {
 			filtered = append(filtered, p)
 		}
 	}
-
-	fmt.Println()
-	fmt.Println(len(filtered))
-	fmt.Println()
 
 	return filtered, nil
 }
