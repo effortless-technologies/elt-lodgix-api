@@ -9,28 +9,13 @@ import (
 	"github.com/labstack/echo"
 )
 
-var Filters []*Filter
-
-type Filter struct {
-	Name 		string 				`json:"name"`
-	Options 	[]string 			`json:"options"`
-}
-
-func init() {
-	filter := new(Filter)
-	filter.Name = "state"
-	filter.Options = []string{"All", "CO", "MA"}
-
-	Filters = append(Filters, filter)
-}
-
 func GetProperties(c echo.Context) error {
 
 	state := c.QueryParam("state")
 
 	type response struct {
 		Count 			int 				`json:"count"`
-		Filters 		[]*Filter			`json:"filters"`
+		Filters 		[]*models.Filter	`json:"filters"`
 		Properties		[]*models.Property	`json:"properties"`
 	}
 
@@ -45,19 +30,62 @@ func GetProperties(c echo.Context) error {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
 
-	resp := new(response)
-
-	if state == "CO" || state == "MA"{
-		resp.Properties, err = models.FilterState(properties, state)
-		if err != nil {
-			return c.JSON(http.StatusBadRequest, "Bad 'state' query param")
+	for _, filter := range models.Filters {
+		if filter.Name == "State" {
+			filter.GetOptions(properties)
 		}
-	} else {
-		resp.Properties = properties
 	}
 
+	resp := new(response)
+	//if state == "" {
+	//
+	//} else {
+	//	for _, filter := range models.Filters {
+	//		if filter.Name == "State" {
+	//			found := false
+	//			for _, option := range filter.Options {
+	//				if state == option {
+	//					found = true
+	//					resp.Properties, err = models.FilterState(
+	//						properties, state)
+	//					if err != nil {
+	//						return c.JSON(http.StatusBadRequest, "Bad 'state' query param")
+	//					}
+	//				}
+	//			}
+	//
+	//			if found == false {
+	//				resp.Properties = properties
+	//			}
+	//		}
+	//	}
+	//}
+
+	for _, filter := range models.Filters {
+		if filter.Name == "State" {
+			found := false
+			for _, option := range filter.Options {
+				if state == option {
+					found = true
+					resp.Properties, err = models.FilterState(
+						properties, state)
+					if err != nil {
+						return c.JSON(
+							http.StatusBadRequest,
+							"Bad 'state' query param")
+					}
+				}
+			}
+
+			if found == false {
+				resp.Properties = properties
+			}
+		}
+	}
+
+
 	resp.Count = len(resp.Properties)
-	resp.Filters = Filters
+	resp.Filters = models.Filters
 
 	return c.JSON(http.StatusAccepted, resp)
 }

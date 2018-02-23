@@ -46,36 +46,3 @@ func (t *TaxFeeDeposit) Parse(tax_map map[string]interface{}) error {
 
 	return nil
 }
-
-/*
-"TaxesFeesDeposits":{
-	"Deposits":null,
-	"Taxes":{
-		"Tax":{
-			"Frequency":"ONETIME",
-			"IsFlat":"No",
-			"Type":"City tax",
-			"Value":"10.75",
-			"Title":"Denver Lodger's Tax"
-		}
-	},
-	"Fees":{
-		"Fee":[
-		{
-			"IsFlat":"No",
-			"Type":"Mandatory",
-			"TaxExempt":"Yes",
-			"Value":"5.0",
-			"Title":"Service Fee"
-		},
-		{
-			"IsFlat":"Yes",
-			"Type":"Mandatory",
-			"TaxExempt":"Yes",
-			"Value":"100.0",
-			"Title":"Denver - Cleaning Fee"
-		}
-		]
-	}
-},
-*/
