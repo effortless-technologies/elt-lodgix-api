@@ -15,10 +15,11 @@ func init() {
 type Filter struct {
 	Name 			string 				`json:"name"`
 	Options 		[]string 			`json:"options"`
-	Subfilters		[]*Filter			`json:"subfilters"`
+	SubFilters		[]*Filter			`json:"sub_filters"`
 }
 
 func (f *Filter) GetOptions(properties []*Property) {
+
 	var options []string
 	options = append(options, "All")
 

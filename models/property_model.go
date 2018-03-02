@@ -4,11 +4,12 @@ import (
 	"encoding/json"
 	"reflect"
 	"strconv"
+	"fmt"
 )
 
 type Property struct {
 	Name 				string				`json:"name"`
-	LogdixId			int					`json:"logdix_id"`
+	LodgixId			int					`json:"lodgix_id"`
 	Address 			*Address			`json:"address"`
 	Bedrooms			int					`json:"bedrooms"`
 	Bathrooms			float64				`json:"bathrooms"`
@@ -34,15 +35,15 @@ func NewProperty() *Property {
 	return p
 }
 
-func (p *Property) Parse(property_map map[string]interface{}) error {
+func (p *Property) Parse(propertyMap map[string]interface{}) error {
 
 	var err error
-	for k, v := range property_map {
+	for k, v := range propertyMap {
 		if k == "Name" {
 			p.Name = v.(string)
 		} else if k == "ID" {
 			lodgixId := v.(string)
-			p.LogdixId, err = strconv.Atoi(lodgixId)
+			p.LodgixId, err = strconv.Atoi(lodgixId)
 			if err != nil {
 				return err
 			}
@@ -179,13 +180,21 @@ func (p *Property) Parse(property_map map[string]interface{}) error {
 					}
 				}
 			}
-		} else if k == "Reviews" {
+		} else if k == "Reviews" && v != nil {
 			for k, v := range v.(map[string]interface{}) {
 				if k == "Review" {
-					for _, v := range v.([]interface{}) {
+					i := reflect.ValueOf(v.(interface{}))
+					switch i.Kind() {
+					case reflect.Map:
 						review := new(Review)
 						review.Parse(v.(map[string]interface{}))
 						p.Reviews = append(p.Reviews, review)
+					case reflect.Slice:
+						for _, v := range v.([]interface{}) {
+							review := new(Review)
+							review.Parse(v.(map[string]interface{}))
+							p.Reviews = append(p.Reviews, review)
+						}
 					}
 				}
 			}
@@ -196,6 +205,10 @@ func (p *Property) Parse(property_map map[string]interface{}) error {
 }
 
 func ParseProperties(payload []byte) ([]*Property, error) {
+
+	fmt.Println()
+	fmt.Println(string(payload))
+	fmt.Println()
 
 	i := 0
 	payload = append(payload[:i], payload[i+1:]...)
@@ -208,13 +221,13 @@ func ParseProperties(payload []byte) ([]*Property, error) {
 		panic(err)
 	}
 
-	var results_array []interface{}
+	var resultsArray []interface{}
 	for _, v := range results {
 		for k, v := range v.(map[string]interface{}) {
 			if k == "Properties" {
 				for k, v := range v.(map[string]interface{}) {
 					if k == "Property" {
-						results_array = v.([]interface{})
+						resultsArray = v.([]interface{})
 					}
 				}
 			}
@@ -222,7 +235,7 @@ func ParseProperties(payload []byte) ([]*Property, error) {
 	}
 
 	properties := []*Property{}
-	for _, v := range results_array {
+	for _, v := range resultsArray {
 		property_map := v.(map[string]interface{})
 		property := NewProperty()
 		err := property.Parse(property_map)

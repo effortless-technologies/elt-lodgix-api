@@ -21,6 +21,7 @@ func main() {
 	})
 
 	e.GET("/properties", server.GetProperties)
+	e.POST("/properties/:id/inquiry", server.CreateInquiry)
 
 	e.Logger.Fatal(e.Start(":1323"))
 }

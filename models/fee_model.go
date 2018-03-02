@@ -12,10 +12,10 @@ type Fee struct {
 	Value 			float64 		`json:"value"`
 }
 
-func (t *Fee) Parse(fee_map map[string]interface{}) error {
+func (t *Fee) Parse(feeMap map[string]interface{}) error {
 
 	var err error
-	for k, v := range fee_map {
+	for k, v := range feeMap {
 		if k == "Name" {
 			t.Name = v.(string)
 		} else if k == "Frequency" {

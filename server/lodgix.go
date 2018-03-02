@@ -7,6 +7,7 @@ import (
 	"github.com/effortless-technologies/elt-lodgix-api/models"
 
 	"github.com/labstack/echo"
+	"fmt"
 )
 
 func GetProperties(c echo.Context) error {
@@ -19,13 +20,13 @@ func GetProperties(c echo.Context) error {
 		Properties		[]*models.Property	`json:"properties"`
 	}
 
-	lodgix_resp, err := clients.GetProperties()
+	lodgixResp, err := clients.GetProperties()
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
 
-	lodgix_resp_bytes := []byte(*lodgix_resp)
-	properties, err := models.ParseProperties([]byte(lodgix_resp_bytes))
+	lodgixRespBytes := []byte(lodgixResp)
+	properties, err := models.ParseProperties([]byte(lodgixRespBytes))
 	if err != nil {
 		return c.JSON(http.StatusInternalServerError, err)
 	}
@@ -37,6 +38,8 @@ func GetProperties(c echo.Context) error {
 	}
 
 	resp := new(response)
+
+	// TODO: handle no state query param tastefully
 	//if state == "" {
 	//
 	//} else {
@@ -83,9 +86,29 @@ func GetProperties(c echo.Context) error {
 		}
 	}
 
-
 	resp.Count = len(resp.Properties)
 	resp.Filters = models.Filters
+
+	return c.JSON(http.StatusAccepted, resp)
+}
+
+func CreateInquiry(c echo.Context) error {
+
+	propertyId := c.Param("id")
+	fmt.Println(propertyId)
+
+	resp, err := clients.PostInquiry(
+		propertyId, "Matty", "Berry",
+		"matthewberryhill@gmail.com", "US", "559",
+		"7559790", "I-would-like-this-property",
+		"http://www.effortlessrental.com")
+	if err != nil {
+		return c.JSON(http.StatusInternalServerError, err)
+	}
+
+	fmt.Println()
+	fmt.Println(resp)
+	fmt.Println()
 
 	return c.JSON(http.StatusAccepted, resp)
 }

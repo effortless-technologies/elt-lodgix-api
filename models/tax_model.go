@@ -19,10 +19,10 @@ func NewTaxFeeDeposit(t string) *TaxFeeDeposit {
 	return tfd
 }
 
-func (t *TaxFeeDeposit) Parse(tax_map map[string]interface{}) error {
+func (t *TaxFeeDeposit) Parse(taxMap map[string]interface{}) error {
 
 	var err error
-	for k, v := range tax_map {
+	for k, v := range taxMap {
 		if k == "Name" {
 			t.Name = v.(string)
 		} else if k == "Frequency" {

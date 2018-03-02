@@ -9,12 +9,11 @@ type Address struct {
 	State 			string 		`json:"state"`
 	Country 		string 		`json:"country"`
 	ZipCode 		string		`json:"zip_code"`
-
 }
 
-func (a *Address) Parse(address_map map[string]interface{}) error {
+func (a *Address) Parse(addressMap map[string]interface{}) error {
 
-	for k, v := range address_map {
+	for k, v := range addressMap {
 		if k == "Street1" {
 			a.Street1 = v.(string)
 		} else if k == "Street2" && v != nil {

@@ -12,10 +12,10 @@ type Review struct {
 	Description 	string			`json:"description"`
 }
 
-func (r *Review) Parse(review_map map[string]interface{}) error {
+func (r *Review) Parse(reviewMap map[string]interface{}) error {
 
 	var err error
-	for k, v := range review_map {
+	for k, v := range reviewMap {
 		if k == "Title" && v != nil {
 			r.Title = v.(string)
 		} else if k == "Date" {

@@ -9,9 +9,9 @@ type Image struct {
 	PreviewUrl		string 			`json:"preview_url"`
 }
 
-func (i *Image) Parse(image_payload map[string]interface{}) error {
+func (i *Image) Parse(imagePayload map[string]interface{}) error {
 
-	for k, v := range image_payload {
+	for k, v := range imagePayload {
 		if k == "Title" && v != nil {
 			i.Title = v.(string)
 		} else if k == "URL" {
