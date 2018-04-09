@@ -9,9 +9,9 @@ import (
 func GetProperties() (*string, error) {
 
 	url := "http://www.lodgix.com/api/xml/properties/get?" +
-		"Token=5b3c8006942b12b1f214a1bbd7bcb5e5" +
+		"Token=5177249582add5a2e3ec176f4b4704db" +
 			"&IncludePhotos=Yes" +
-				"&OwnerID=27102" +
+				"&OwnerID=21961" +
 					"&IncludeRates=Yes" +
 						"&JSONCallback=1" +
 							"&IncludeAmenities=Yes" +
