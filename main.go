@@ -21,6 +21,7 @@ func main() {
 	})
 
 	e.GET("/properties", server.GetProperties)
+	e.GET("/props", server.GetProps)
 
 	e.Logger.Fatal(e.Start(":1323"))
 }

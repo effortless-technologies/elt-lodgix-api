@@ -154,7 +154,7 @@ func (p *Property) Parse(property_map map[string]interface{}) error {
 					}
 				}
 			}
-		} else if k == "Amenities" {
+		} else if k == "Amenities" && v != nil {
 			for k, v := range v.(map[string]interface{}) {
 				if k == "Amenity" {
 					for _, v := range v.([]interface{}) {
@@ -179,13 +179,21 @@ func (p *Property) Parse(property_map map[string]interface{}) error {
 					}
 				}
 			}
-		} else if k == "Reviews" {
+		} else if k == "Reviews" && v != nil {
 			for k, v := range v.(map[string]interface{}) {
-				if k == "Review" {
-					for _, v := range v.([]interface{}) {
+				if k == "Review" && v != nil {
+					i := reflect.ValueOf(v.(interface{}))
+					switch i.Kind() {
+					case reflect.Map:
 						review := new(Review)
 						review.Parse(v.(map[string]interface{}))
 						p.Reviews = append(p.Reviews, review)
+					case reflect.Slice:
+						for _, v := range v.([]interface{}) {
+							review := new(Review)
+							review.Parse(v.(map[string]interface{}))
+							p.Reviews = append(p.Reviews, review)
+						}
 					}
 				}
 			}

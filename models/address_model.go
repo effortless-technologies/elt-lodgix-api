@@ -21,7 +21,7 @@ func (a *Address) Parse(address_map map[string]interface{}) error {
 			a.Street2 = v.(string)
 		} else if k == "City" {
 			a.City = v.(string)
-		} else if k == "State" {
+		} else if k == "State" && v != nil {
 			for k, v := range v.(map[string]interface{}) {
 				if k == "@code" {
 					a.State = v.(string)
