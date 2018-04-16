@@ -172,10 +172,18 @@ func (p *Property) Parse(property_map map[string]interface{}) error {
 		} else if k == "Photos" {
 			for k, v := range v.(map[string]interface{}) {
 				if k == "Photo" {
-					for _, v := range v.([]interface{}) {
+					i := reflect.ValueOf(v.(interface{}))
+					switch i.Kind() {
+					case reflect.Map:
 						image := new(Image)
 						image.Parse(v.(map[string]interface{}))
 						p.Images = append(p.Images, image)
+					case reflect.Slice:
+						for _, v := range v.([]interface{}) {
+							image := new(Image)
+							image.Parse(v.(map[string]interface{}))
+							p.Images = append(p.Images, image)
+						}
 					}
 				}
 			}
